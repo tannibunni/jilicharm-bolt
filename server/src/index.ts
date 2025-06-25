@@ -36,25 +36,19 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// DeepSeek API 配置
-const DEEPSEEK_BASE_URL = process.env.DEEPSEEK_BASE_URL;
-const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+// ChatGPT API 配置
+const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL || 'https://api.openai.com';
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
 // 打印环境变量（不显示完整 API key）
 console.log('Environment variables loaded:', {
-  DEEPSEEK_BASE_URL,
-  DEEPSEEK_API_KEY: DEEPSEEK_API_KEY ? '***' + DEEPSEEK_API_KEY.slice(-4) : undefined
+  OPENAI_BASE_URL,
+  OPENAI_API_KEY: OPENAI_API_KEY ? '***' + OPENAI_API_KEY.slice(-4) : undefined
 });
 
 // 检查必要的环境变量
-if (!DEEPSEEK_API_KEY) {
-  console.error('Error: DEEPSEEK_API_KEY is not set in environment variables');
-  console.error('Please check your .env file in the project root directory');
-  process.exit(1);
-}
-
-if (!DEEPSEEK_BASE_URL) {
-  console.error('Error: DEEPSEEK_BASE_URL is not set in environment variables');
+if (!OPENAI_API_KEY) {
+  console.error('Error: OPENAI_API_KEY is not set in environment variables');
   console.error('Please check your .env file in the project root directory');
   process.exit(1);
 }
@@ -64,8 +58,8 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok',
     config: {
-      hasDeepSeekBaseUrl: !!DEEPSEEK_BASE_URL,
-      hasDeepSeekApiKey: !!DEEPSEEK_API_KEY
+      hasOpenAiBaseUrl: !!OPENAI_BASE_URL,
+      hasOpenAiApiKey: !!OPENAI_API_KEY
     }
   });
 });
@@ -93,7 +87,7 @@ app.options('/api/analyze', (req, res) => {
   res.status(200).end();
 });
 
-// DeepSeek API 代理端点
+// ChatGPT API 代理端点
 app.post('/api/analyze', async (req, res) => {
   // 添加CORS响应头
   res.header('Access-Control-Allow-Origin', '*');
@@ -115,7 +109,7 @@ app.post('/api/analyze', async (req, res) => {
     }
 
     const payload = {
-      model: 'deepseek-chat',
+      model: 'gpt-3.5-turbo',
       messages: [
         {
           role: 'system',
@@ -129,20 +123,20 @@ app.post('/api/analyze', async (req, res) => {
       temperature: 0.2
     };
 
-    console.log('Sending request to DeepSeek API...');
+    console.log('Sending request to ChatGPT API...');
     const response = await axios.post(
-      `${DEEPSEEK_BASE_URL}/v1/chat/completions`,
+      `${OPENAI_BASE_URL}/v1/chat/completions`,
       payload,
       {
         headers: {
-          'Authorization': `Bearer ${DEEPSEEK_API_KEY}`,
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json'
         },
         timeout: 20000
       }
     );
 
-    console.log('DeepSeek API response received');
+    console.log('ChatGPT API response received');
     res.json(response.data);
   } catch (error) {
     console.error('Error in /api/analyze:', {
@@ -153,7 +147,7 @@ app.post('/api/analyze', async (req, res) => {
 
     if (axios.isAxiosError(error)) {
       return res.status(error.response?.status || 500).json({
-        error: 'DeepSeek API error',
+        error: 'ChatGPT API error',
         details: {
           message: error.message,
           status: error.response?.status,
@@ -172,7 +166,7 @@ app.post('/api/analyze', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
   console.log('Environment check:', {
-    hasDeepSeekBaseUrl: !!DEEPSEEK_BASE_URL,
-    hasDeepSeekApiKey: !!DEEPSEEK_API_KEY
+    hasOpenAiBaseUrl: !!OPENAI_BASE_URL,
+    hasOpenAiApiKey: !!OPENAI_API_KEY
   });
 }); 
