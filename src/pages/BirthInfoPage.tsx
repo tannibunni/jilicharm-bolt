@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { CalendarClock, MapPin, HelpCircle } from 'lucide-react';
+import logo from '../assets/logo-jilicharm-fengshui.png';
+import RotatingTextBanner from '../components/shared/RotatingTextBanner';
 
 import { useAppContext } from '../contexts/AppContext';
 import { analyzeBirthInfo } from '../services/apiService';
@@ -15,6 +17,36 @@ interface FormData {
   birthLocation: string;
   isTimeUnsure: boolean;
 }
+
+const introMessages = [
+  "Find out which energies shape your life and luck",
+  "Personalized Feng Shui insights based on your birth info",
+  "Get practical tips to boost your well-being, career, and relationships",
+  "Discover your lucky colors and elements",
+  "No prior Feng Shui knowledge needed—just enter your birth details!"
+];
+
+// 简单Modal组件
+const Modal: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+    <div className="bg-white rounded-xl shadow-lg max-w-xs w-full mx-4 p-6 relative animate-fade-in">
+      {children}
+    </div>
+  </div>
+);
+
+const fengShuiTips = [
+  "Keep your entryway clear to welcome positive energy.",
+  "Add a plant to your workspace for growth and vitality.",
+  "Mirrors can expand light and energy—place them wisely!",
+  "Declutter your space to let good fortune flow.",
+  "Use the color green to boost health and renewal.",
+  "A bowl of oranges in the kitchen attracts abundance.",
+  "Let natural light in to energize your home.",
+  "Place your bed where you can see the door for restful sleep.",
+  "Water features can enhance wealth energy—keep them clean.",
+  "Balance the five elements in your decor for harmony."
+];
 
 const BirthInfoPage: React.FC = () => {
   const navigate = useNavigate();
@@ -48,6 +80,9 @@ const BirthInfoPage: React.FC = () => {
 
   const isTimeUnsure = watch('isTimeUnsure');
   const birthDate = watch('birthDate');
+  
+  // 随机选一个风水tip
+  const [tipIndex] = useState(() => Math.floor(Math.random() * fengShuiTips.length));
   
   const onSubmit = async (data: FormData) => {
     try {
@@ -125,13 +160,27 @@ const BirthInfoPage: React.FC = () => {
       exit={{ opacity: 0 }}
       className="max-w-sm mx-auto"
     >
-      <h1 className="text-2xl font-display font-semibold text-center mb-2 mt-6">
-        Discover Your Five Elements
-      </h1>
-      <p className="text-center text-accent-600 mb-6">
-        Enter your birth details to unlock personalized Feng Shui insights
-      </p>
-      
+      <a href="https://jilicharm.com/" target="_blank" rel="noopener noreferrer">
+        <img
+          src={logo}
+          alt="JILI Charm Logo"
+          className="mx-auto mb-6 w-32 h-auto"
+        />
+      </a>
+      <div className="text-center mb-8">
+        <h1 className="text-2xl sm:text-3xl font-display font-bold text-accent-900 mb-2">Discover Your Energy Map
+        </h1>
+        <div className="text-accent-700 text-base mb-2">
+        Personalized Feng Shui analysis tailored to your space
+        </div>
+        <div className="text-accent-500 text-sm">
+          Quick, private, no sign-up
+        </div>
+        <div className="text-accent-500 text-sm">
+        Trusted by 10,000+
+        </div>
+       
+      </div>
       <motion.div
         className="bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm p-6 mb-8"
         initial={{ y: 20 }}
@@ -168,7 +217,7 @@ const BirthInfoPage: React.FC = () => {
             
             {showTimeHelp && (
               <div className="mb-2 p-3 bg-primary-50 rounded-lg text-sm text-accent-600">
-                Knowing the time allows for a more accurate Feng Shui reading, but you can still proceed if you're not sure.
+                Don't know the exact time? No problem — we'll use noon as a placeholder so you still get an accurate reading.
               </div>
             )}
             
@@ -228,11 +277,18 @@ const BirthInfoPage: React.FC = () => {
         </form>
       </motion.div>
       
+      {/* 优化后的分析加载弹窗+风水tips */}
       {isAnalysisLoading && (
-        <div className="text-center p-8">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent-800 mx-auto mb-4"></div>
-          <p className="text-accent-600">Analyzing your cosmic energies...</p>
-        </div>
+        <Modal>
+          <div className="flex flex-col items-center p-2">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-accent-800 mb-4"></div>
+            <h2 className="text-lg font-bold mb-2 text-accent-900">Analyzing your energy map...</h2>
+            <div className="text-accent-700 mb-2 text-sm">Here's a Feng Shui tip while you wait:</div>
+            <div className="bg-primary-50 rounded-lg p-3 text-accent-800 text-center font-medium text-base shadow-sm">
+              {fengShuiTips[tipIndex]}
+            </div>
+          </div>
+        </Modal>
       )}
       
       {error && (
@@ -246,6 +302,8 @@ const BirthInfoPage: React.FC = () => {
           </button>
         </div>
       )}
+      
+     
     </motion.div>
   );
 };
