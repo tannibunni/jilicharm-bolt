@@ -43,23 +43,30 @@ exports.handler = async (event, context) => {
         messages: [
           {
             role: 'system',
-            content: `You are a professional BaZi (Four Pillars of Destiny) and Feng Shui consultant. Analyze the user's birth info and return ONLY a valid JSON object with English fields, structured exactly as shown below. Do NOT include any explanation, markdown, code block, or any text before or after the JSON. Output ONLY the JSON object, nothing else. If you add any text or code block formatting, you will be penalized.
+            content: `You are a professional BaZi (Four Pillars of Destiny) and Feng Shui consultant. Analyze the user's birth information using traditional Chinese astrology principles and return ONLY a valid JSON object with the following structure. Do NOT include any explanation, markdown, code block, or any text before or after the JSON. Output ONLY the JSON object, nothing else.
 
-{
-  "elements": { "wood": 2, "fire": 3, "earth": 1, "metal": 0, "water": 4 },
-  "dominantElement": "fire",
-  "favorableElements": ["water", "wood"],
-  "luckyColors": ["blue", "green"],
-  "recommendations": ["Put a water fountain in the north corner.", "Wear metal accessories.", "Add wood elements in the east.", "Avoid strong fire elements"],
-  "encouragement": "Let your creativity flow like water."
-}`
+The JSON must contain:
+- "elements": An object with five elements (wood, fire, earth, metal, water) and their numerical values (0-10)
+- "dominantElement": The strongest element from the analysis
+- "favorableElements": Array of 1-3 elements that would benefit the person
+- "luckyColors": Array of colors that match the favorable elements
+- "recommendations": Array of 3-5 practical Feng Shui recommendations
+- "encouragement": A personalized encouraging message
+
+Base your analysis on the actual birth date, time, and location provided. Each person should get unique results based on their specific birth information.`
           },
           {
             role: 'user',
-            content: `Birth Date: ${date}\nBirth Time: ${time}\nBirth Location: ${location}`
+            content: `Please analyze my birth information and provide a personalized Feng Shui reading:
+
+Birth Date: ${date}
+Birth Time: ${time}
+Birth Location: ${location}
+
+Return only the JSON object with my personalized analysis.`
           }
         ],
-        temperature: 0.2
+        temperature: 0.7
       },
       {
         headers: {

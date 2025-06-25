@@ -23,21 +23,6 @@ export const analyzeBirthInfo = async (
   location: string,
   isTimeUnsure?: boolean
 ): Promise<FengShuiAnalysis> => {
-  const prompt = `Please analyze the following birth information using Chinese BaZi and Five Elements principles, and return ONLY a valid JSON object with English fields, structured exactly as shown below, without any additional text:
-
-{
-  "elements": { "wood": 2, "fire": 3, "earth": 1, "metal": 0, "water": 4 },
-  "dominantElement": "fire",
-  "favorableElements": ["water", "wood"],
-  "luckyColors": ["blue", "green"],
-  "recommendations": ["Put a water fountain in the north corner.", "Wear metal accessories.", "Add wood elements in the east.", "Avoid strong fire elements"],
-  "encouragement": "Let your creativity flow like water."
-}
-
-Birth Date: ${date}
-Birth Time: ${isTimeUnsure ? 'unknown' : time}
-Birth Location: ${location || 'unknown'}`;
-
   try {
     const requestData = {
       date,
@@ -151,6 +136,21 @@ Birth Location: ${location || 'unknown'}`;
         recommendations: Array.isArray(recommendations) ? recommendations : [recommendations],
         encouragement
       };
+
+      // 验证这是真实的ChatGPT响应，而不是默认值
+      console.log('Parsed analysis result:', fengShuiAnalysis);
+      
+      // 检查是否是默认的示例值
+      const isDefaultResponse = 
+        JSON.stringify(elements) === '{"wood":2,"fire":3,"earth":1,"metal":0,"water":4}' &&
+        dominantElement === 'fire' &&
+        JSON.stringify(favorableElements) === '["water","wood"]';
+      
+      if (isDefaultResponse) {
+        console.warn('Warning: Analysis result appears to be default example values');
+      } else {
+        console.log('✅ Analysis result appears to be unique ChatGPT response');
+      }
 
       // Validate the required fields
       if (!fengShuiAnalysis.elements || 
