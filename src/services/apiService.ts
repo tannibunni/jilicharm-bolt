@@ -60,6 +60,14 @@ Birth Location: ${location || 'unknown'}`;
       }
     );
 
+    console.log('API response received:', response.data);
+    console.log('Response structure:', {
+      hasChoices: !!response.data.choices,
+      choicesLength: response.data.choices?.length,
+      hasMessage: !!response.data.choices?.[0]?.message,
+      hasContent: !!response.data.choices?.[0]?.message?.content
+    });
+
     let result = response.data.choices[0].message.content;
     
     // Remove any markdown formatting or backticks

@@ -34,6 +34,8 @@ exports.handler = async (event, context) => {
     }
 
     // 调用ChatGPT API
+    console.log('Calling ChatGPT API with:', { date, time, location });
+    
     const response = await axios.post(
       'https://api.openai.com/v1/chat/completions',
       {
@@ -68,10 +70,25 @@ exports.handler = async (event, context) => {
       }
     );
 
+    console.log('ChatGPT API response received');
+    console.log('Raw ChatGPT content:', response.data.choices[0].message.content);
+
+    // 确保返回正确的格式，与前端期望的格式一致
+    const chatGPTResponse = {
+      choices: [
+        {
+          message: {
+            content: response.data.choices[0].message.content
+          }
+        }
+      ]
+    };
+
+    console.log('Returning formatted response');
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify(response.data)
+      body: JSON.stringify(chatGPTResponse)
     };
 
   } catch (error) {
