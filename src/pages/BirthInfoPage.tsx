@@ -285,7 +285,7 @@ const BirthInfoPage: React.FC = () => {
             <h2 className="text-lg font-bold mb-2 text-accent-900">Analyzing your energy map...</h2>
             <div className="text-accent-700 mb-2 text-sm">Here's a Feng Shui tip while you wait:</div>
             <div className="bg-primary-50 rounded-lg p-3 text-accent-800 text-center font-medium text-base shadow-sm">
-              {fengShuiTips[tipIndex]}
+              {Array.isArray(fengShuiTips) && fengShuiTips.length > 0 ? (fengShuiTips[tipIndex % fengShuiTips.length] || 'Welcome to your Feng Shui journey!') : 'Welcome to your Feng Shui journey!'}
             </div>
           </div>
         </Modal>

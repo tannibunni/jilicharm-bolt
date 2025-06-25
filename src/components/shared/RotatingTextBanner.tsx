@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface RotatingTextBannerProps {
-  messages: string[];
+  messages?: string[];
   className?: string;
 }
 
-const RotatingTextBanner: React.FC<RotatingTextBannerProps> = ({ messages, className = '' }) => {
+const RotatingTextBanner: React.FC<RotatingTextBannerProps> = ({ messages = [], className = '' }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
+    if (!Array.isArray(messages) || messages.length === 0) return;
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % messages.length);
     }, 2600);
     return () => clearInterval(interval);
-  }, [messages.length]);
+  }, [messages]);
+
+  if (!Array.isArray(messages) || messages.length === 0) return null;
 
   return (
     <div className={`relative min-h-[32px] ${className}`}>
