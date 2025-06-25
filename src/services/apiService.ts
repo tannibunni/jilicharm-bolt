@@ -15,7 +15,7 @@ interface ImportMeta {
 // 自动切换 API 地址
 const API_BASE_URL = import.meta.env.DEV
   ? 'http://localhost:3000'
-  : 'https://jilicharm-bolt.onrender.com';
+  : ''; // 生产环境使用相对路径，指向Netlify Functions
 
 export const analyzeBirthInfo = async (
   date: string,
