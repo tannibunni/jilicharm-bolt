@@ -202,3 +202,31 @@ export const getProductRecommendations = async (
     throw new Error('Failed to get product recommendations');
   }
 };
+
+export const saveUserEmail = async (email: string): Promise<void> => {
+  const supabase = createClient(
+    import.meta.env.VITE_SUPABASE_URL,
+    import.meta.env.VITE_SUPABASE_ANON_KEY
+  );
+
+  try {
+    const { error } = await supabase
+      .from('user_emails')
+      .insert([
+        { 
+          email,
+          created_at: new Date().toISOString()
+        }
+      ]);
+
+    if (error) {
+      console.error('Error saving email:', error);
+      throw new Error('Failed to save email');
+    }
+
+    console.log('Email saved successfully');
+  } catch (error) {
+    console.error('Error saving user email:', error);
+    throw error;
+  }
+};
