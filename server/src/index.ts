@@ -27,28 +27,13 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // 中间件
-// 开发环境使用宽松的CORS配置，生产环境使用严格的配置
-const corsOptions = process.env.NODE_ENV === 'production' 
-  ? {
-      origin: [
-        'https://jilicharm.netlify.app',
-        'https://jilicharm-bolt.netlify.app',
-        'http://localhost:5173',
-        'http://localhost:3000',
-        'http://localhost:4173'
-      ],
-      credentials: true,
-      methods: ['GET', 'POST', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization']
-    }
-  : {
-      origin: true, // 允许所有来源（仅用于调试）
-      credentials: true,
-      methods: ['GET', 'POST', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization']
-    };
-
-app.use(cors(corsOptions));
+// 暂时使用宽松的CORS配置来解决跨域问题
+app.use(cors({
+  origin: true, // 允许所有来源
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept']
+}));
 app.use(express.json());
 
 // DeepSeek API 配置
@@ -101,15 +86,20 @@ app.get('/', (req, res) => {
 
 // 处理预检请求
 app.options('/api/analyze', (req, res) => {
-  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.status(200).end();
 });
 
 // DeepSeek API 代理端点
 app.post('/api/analyze', async (req, res) => {
+  // 添加CORS响应头
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, Accept');
+  
   try {
     const { date, time, location } = req.body;
 

@@ -47,9 +47,19 @@ Birth Location: ${location || 'unknown'}`;
       location: location || 'Washington DC'
     };
     
+    console.log('Making API request to:', `${API_BASE_URL}/api/analyze`);
+    console.log('Request data:', requestData);
+    
     const response = await axios.post(
       `${API_BASE_URL}/api/analyze`,
-      requestData
+      requestData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        timeout: 30000
+      }
     );
 
     let result = response.data.choices[0].message.content;
