@@ -14,6 +14,11 @@ interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
 
+// 自动切换 API 地址
+const API_BASE_URL = import.meta.env.DEV
+  ? 'http://localhost:3000'
+  : 'https://jilicharm-bolt.onrender.com';
+
 export const analyzeBirthInfo = async (
   date: string,
   time: string,
@@ -36,31 +41,32 @@ Birth Time: ${isTimeUnsure ? 'unknown' : time}
 Birth Location: ${location || 'unknown'}`;
 
   try {
+    const requestData = {
+      date,
+      time,
+      location: location || 'Washington DC'
+    };
+    
     const response = await axios.post(
-      `${import.meta.env.VITE_DEEPSEEK_BASE_URL}/chat/completions`,
-      {
-        model: 'deepseek-chat',
-        messages: [
-          {
-            role: 'user',
-            content: prompt
-          }
-        ]
-      },
-      {
-        headers: {
-          'Authorization': `Bearer ${import.meta.env.VITE_DEEPSEEK_API_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
+      `${API_BASE_URL}/api/analyze`,
+      requestData
     );
 
     let result = response.data.choices[0].message.content;
     
     // Remove any markdown formatting or backticks
-    result = result.replace(/```json\n|\n```/g, '').trim();
+    result = result.replace(/```json\n|```/g, '').trim();
+    // 用正则提取第一个大括号包裹的 JSON
+    const braceMatch = result.match(/{[\s\S]*}/);
+    if (braceMatch) {
+      result = braceMatch[0];
+    }
+    // 打印原始内容便于调试
+    console.log('Raw result to parse:', result);
     
     try {
+      // 尝试修复常见的 JSON 问题
+      result = result.replace(/,\s*}/g, '}').replace(/,\s*]/g, ']');
       const analysis = JSON.parse(result);
 
       // Map Chinese field names to English
@@ -174,7 +180,7 @@ export const getProductRecommendations = async (
     }
 
     // Filter by theme if provided
-    if (theme) {
+      if (theme) {
       query = query.contains('themes', [theme]);
     }
 
@@ -187,119 +193,12 @@ export const getProductRecommendations = async (
       throw new Error(`Supabase query error: ${error.message}`);
     }
 
-    if (!data) {
-      return [];
-    }
-
-    // Transform the data to match the Product interface
-    return data.map((item: {
-      id: number;
-      title: string;
-      description: string;
-      image_url: string;
-      shopify_url: string;
-      price: number;
-      compare_at_price?: number;
-      elements: string[];
-      themes: string[];
-    }) => ({
-      id: item.id.toString(),
-      name: item.title,
-      description: item.description,
-      imageUrl: item.image_url,
-      shopifyUrl: item.shopify_url,
-      price: `$${item.price.toFixed(2)}`,
-      originalPrice: item.compare_at_price ? `$${item.compare_at_price.toFixed(2)}` : undefined,
-      onSale: item.compare_at_price ? item.compare_at_price > item.price : false,
-      elements: item.elements as ElementType[],
-      themes: item.themes as ThemeType[]
-    }));
+    return data;
   } catch (error) {
-    console.error('Error fetching recommended products:', error);
-    throw error;
+    console.error('Error getting product recommendations:', error);
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error('Failed to get product recommendations');
   }
 };
-
-export const saveUserEmail = async (email: string): Promise<boolean> => {
-  const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY
-  );
-
-  const { error } = await supabase
-    .from('emails')
-    .insert([{ email }]);
-
-  if (error) {
-    console.error('Error saving email:', error);
-    return false;
-  }
-  return true;
-};
-
-export async function getRecommendedProducts(
-  favorableElements: string[],
-  theme?: string
-): Promise<Product[]> {
-  const supabase = createClient(
-    import.meta.env.VITE_SUPABASE_URL,
-    import.meta.env.VITE_SUPABASE_ANON_KEY
-  );
-
-  try {
-    let query = supabase
-      .from('products')
-      .select('*')
-      .limit(6);
-
-    // Filter by favorable elements
-    if (favorableElements.length > 0) {
-      query = query.contains('element', favorableElements);
-    }
-
-    // Filter by theme if provided
-    if (theme) {
-      query = query.ilike('luck', `%${theme}%`);
-    }
-
-    // Order by title
-    query = query.order('title');
-
-    const { data, error } = await query;
-
-    if (error) {
-      throw new Error(`Supabase query error: ${error.message}`);
-    }
-
-    if (!data) {
-      return [];
-    }
-
-    // Transform the data to match the Product interface
-    return data.map((item: {
-      id: number;
-      title: string;
-      recommendation: string;
-      image_url: string;
-      shopify_url: string;
-      price: number;
-      compare_at_price?: number;
-      element: string;
-      luck: string;
-    }) => ({
-      id: item.id.toString(),
-      name: item.title,
-      description: item.recommendation,
-      imageUrl: item.image_url,
-      shopifyUrl: item.shopify_url,
-      price: `$${item.price.toFixed(2)}`,
-      originalPrice: item.compare_at_price ? `$${item.compare_at_price.toFixed(2)}` : undefined,
-      onSale: item.compare_at_price ? item.compare_at_price > item.price : false,
-      elements: [item.element as ElementType],
-      themes: [item.luck.toLowerCase() as ThemeType]
-    }));
-  } catch (error) {
-    console.error('Error fetching recommended products:', error);
-    throw error;
-  }
-}

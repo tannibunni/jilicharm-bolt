@@ -45,10 +45,21 @@ function createSupabaseClient() {
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
   const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
   
+  console.log('Environment variables check:');
+  console.log('VITE_SUPABASE_URL:', supabaseUrl ? 'Set' : 'NOT SET');
+  console.log('VITE_SUPABASE_ANON_KEY:', supabaseKey ? 'Set' : 'NOT SET');
   console.log('Creating Supabase client with:', {
     url: supabaseUrl,
     keyLength: supabaseKey?.length
   });
+  
+  if (!supabaseUrl) {
+    throw new Error('VITE_SUPABASE_URL environment variable is not set');
+  }
+  
+  if (!supabaseKey) {
+    throw new Error('VITE_SUPABASE_ANON_KEY environment variable is not set');
+  }
   
   return createClient(supabaseUrl, supabaseKey, {
     auth: {
