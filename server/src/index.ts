@@ -27,7 +27,28 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // 中间件
-app.use(cors());
+// 开发环境使用宽松的CORS配置，生产环境使用严格的配置
+const corsOptions = process.env.NODE_ENV === 'production' 
+  ? {
+      origin: [
+        'https://jilicharm.netlify.app',
+        'https://jilicharm-bolt.netlify.app',
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'http://localhost:4173'
+      ],
+      credentials: true,
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
+    }
+  : {
+      origin: true, // 允许所有来源（仅用于调试）
+      credentials: true,
+      methods: ['GET', 'POST', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization']
+    };
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // DeepSeek API 配置
@@ -76,6 +97,15 @@ app.get('/', (req, res) => {
     },
     status: 'running'
   });
+});
+
+// 处理预检请求
+app.options('/api/analyze', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.status(200).end();
 });
 
 // DeepSeek API 代理端点
