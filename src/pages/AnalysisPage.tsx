@@ -51,7 +51,7 @@ const AnalysisPage: React.FC = () => {
             Explore other Feng Shui themes and get new personalized recommendations.
           </p>
           <button
-            onClick={() => navigate('/theme-selection')}
+            onClick={() => navigate('/themes')}
             className="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200"
           >
             Choose Different Theme
