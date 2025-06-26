@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Mail } from 'lucide-react';
-import { saveUserEmail } from '../../services/apiService';
+import { saveUserEmail, saveUserAnalysis } from '../../services/apiService';
 import { useAppContext } from '../../contexts/AppContext';
 
 interface EmailFormProps {
@@ -9,7 +9,7 @@ interface EmailFormProps {
 }
 
 const EmailForm: React.FC<EmailFormProps> = ({ onSuccess }) => {
-  const { setUserEmail } = useAppContext();
+  const { setUserEmail, userBirthInfo, fengShuiAnalysis } = useAppContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   
@@ -22,12 +22,19 @@ const EmailForm: React.FC<EmailFormProps> = ({ onSuccess }) => {
   const onSubmit = async (data: { email: string }) => {
     setIsSubmitting(true);
     try {
+      // Save email to user_emails table
       await saveUserEmail(data.email);
+      
+      // Save complete analysis to user_analysis table if we have the data
+      if (fengShuiAnalysis && userBirthInfo.date && userBirthInfo.time) {
+        await saveUserAnalysis(data.email, userBirthInfo, fengShuiAnalysis);
+      }
+      
       setUserEmail(data.email);
       setSuccess(true);
       onSuccess?.();
     } catch (error) {
-      console.error('Error saving email:', error);
+      console.error('Error saving user data:', error);
     } finally {
       setIsSubmitting(false);
     }
