@@ -169,7 +169,7 @@ const BirthInfoPage: React.FC = () => {
       </a>
       <div className="text-center mb-8">
         <h1 className="text-2xl sm:text-3xl font-display font-bold text-accent-900 mb-2">Discover Your Energy Map
-        </h1>
+      </h1>
         <div className="text-accent-700 text-base mb-2">
         Personalized Feng Shui analysis tailored to your space
         </div>
@@ -179,7 +179,7 @@ const BirthInfoPage: React.FC = () => {
         <div className="text-accent-500 text-sm">
         Trusted by 10,000+
         </div>
-       
+      
       </div>
       <motion.div
         className="bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm p-6 mb-8"
@@ -287,7 +287,7 @@ const BirthInfoPage: React.FC = () => {
             <div className="bg-primary-50 rounded-lg p-3 text-accent-800 text-center font-medium text-base shadow-sm">
               {Array.isArray(fengShuiTips) && fengShuiTips.length > 0 ? (fengShuiTips[tipIndex % fengShuiTips.length] || 'Welcome to your Feng Shui journey!') : 'Welcome to your Feng Shui journey!'}
             </div>
-          </div>
+        </div>
         </Modal>
       )}
       

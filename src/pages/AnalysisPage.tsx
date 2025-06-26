@@ -42,7 +42,21 @@ const AnalysisPage: React.FC = () => {
         
         <FengShuiRecommendation analysis={fengShuiAnalysis} />
         
-        
+        {/* Navigation block to go back to theme selection */}
+        <div className="bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm p-6 mb-6">
+          <h3 className="text-lg font-display text-accent-800 mb-3">
+            Want to Try a Different Theme?
+          </h3>
+          <p className="text-accent-700 mb-4">
+            Explore other Feng Shui themes and get new personalized recommendations.
+          </p>
+          <button
+            onClick={() => navigate('/theme-selection')}
+            className="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200"
+          >
+            Choose Different Theme
+          </button>
+        </div>
         
         {!isProductsLoading && recommendedProducts.length > 0 && (
           <ProductCarousel 
@@ -50,7 +64,10 @@ const AnalysisPage: React.FC = () => {
             title="Recommended for You" 
           />
         )}
-  <RotatingTextBanner />
+        
+        <div className="mb-6">
+          <RotatingTextBanner />
+        </div>
 
         <div className="bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm p-6 mb-8">
           <h2 className="text-xl font-display text-accent-800 mb-4">

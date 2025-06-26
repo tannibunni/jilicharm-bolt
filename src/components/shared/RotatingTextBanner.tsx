@@ -21,19 +21,19 @@ const RotatingTextBanner: React.FC<RotatingTextBannerProps> = ({ messages = [], 
 
   return (
     <div className={`relative min-h-[32px] ${className}`}>
-      <AnimatePresence mode="wait">
-        <motion.span
+          <AnimatePresence mode="wait">
+            <motion.span
           key={messages[currentIndex]}
           initial={{ y: 18, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
+              animate={{ y: 0, opacity: 1 }}
           exit={{ y: -18, opacity: 0 }}
-          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+              transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           className="block"
-        >
+            >
           {messages[currentIndex]}
-        </motion.span>
-      </AnimatePresence>
-    </div>
+            </motion.span>
+          </AnimatePresence>
+        </div>
   );
 };
 
