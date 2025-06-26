@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import logoImage from '../assets/logo-jilicharm-fengshui.png';
+import logoImage from '../../assets/logo-jilicharm-fengshui.png';
 
 interface HeaderProps {
   showNewAnalysis?: boolean;
