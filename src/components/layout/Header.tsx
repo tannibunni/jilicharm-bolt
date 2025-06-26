@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import logoImage from '../../assets/logo-jilicharm-fengshui.png';
+import logoImage from '../../assets/jilicharm-logo-white.png';
 import { useAppContext } from '../../contexts/AppContext';
 import { saveUserEmail, saveUserAnalysis } from '../../services/apiService';
 
