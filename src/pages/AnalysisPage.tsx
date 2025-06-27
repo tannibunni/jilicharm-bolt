@@ -66,7 +66,7 @@ const AnalysisPage: React.FC = () => {
         )}
         
         <div className="mb-6">
-          <RotatingTextBanner />
+  <RotatingTextBanner />
         </div>
 
         <div className="bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm p-6 mb-8">

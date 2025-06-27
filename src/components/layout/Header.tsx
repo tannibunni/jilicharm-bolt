@@ -42,7 +42,7 @@ const Header: React.FC<HeaderProps> = ({ showNewAnalysis = true }) => {
       setIsSubmitting(false);
     }
   };
-
+  
   return (
     <header className="bg-[#2E3532] border-b border-primary-100 sticky top-0 z-50">
       <div className="max-w-md mx-auto px-4 sm:px-6 py-4 flex items-center justify-between relative">
