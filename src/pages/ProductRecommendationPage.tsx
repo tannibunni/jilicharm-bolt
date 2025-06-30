@@ -16,6 +16,8 @@ const ProductRecommendationPage: React.FC = () => {
   const navigate = useNavigate();
   const [themeProducts, setThemeProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showDiscountModal, setShowDiscountModal] = useState(false);
+  const [hasShownDiscount, setHasShownDiscount] = useState(false);
   
   const { fengShuiAnalysis } = useAppContext();
 
@@ -155,6 +157,23 @@ const ProductRecommendationPage: React.FC = () => {
     loadThemeProducts();
   }, [theme, fengShuiAnalysis]);
   
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (!hasShownDiscount) {
+        setShowDiscountModal(true);
+        setHasShownDiscount(true);
+        // 阻止默认弹窗
+        e.preventDefault();
+        e.returnValue = '';
+        return '';
+      }
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [hasShownDiscount]);
+  
   if (!fengShuiAnalysis) {
     return (
       <div className="text-center p-8">
@@ -169,6 +188,30 @@ const ProductRecommendationPage: React.FC = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      {/* 离开前弹窗：10%折扣 */}
+      {showDiscountModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-lg max-w-xs w-full mx-4 p-6 relative animate-fade-in text-center">
+            <button
+              className="absolute top-2 right-2 text-accent-400 hover:text-accent-700 text-xl"
+              onClick={() => setShowDiscountModal(false)}
+              aria-label="Close"
+            >
+              ×
+            </button>
+            <h2 className="text-2xl font-bold mb-2 text-accent-800">Wait! 🎁</h2>
+            <p className="text-accent-700 text-lg mb-4">Get <span className="text-primary-600 font-bold">10% OFF</span> your first order!</p>
+            <p className="text-accent-600 mb-4 text-sm">Use code <span className="font-mono bg-primary-50 px-2 py-1 rounded">WELCOME10</span> at checkout.</p>
+            <button
+              className="w-full bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 mt-2"
+              onClick={() => setShowDiscountModal(false)}
+            >
+              Claim Discount
+            </button>
+          </div>
+        </div>
+      )}
+
       <button
         onClick={handleBack}
         className="mb-6 flex items-center text-accent-600 hover:text-accent-800 transition-colors"
@@ -229,6 +272,9 @@ const ProductRecommendationPage: React.FC = () => {
         </ul>
       </div>
 
+      {/* Personal Encouragement */}
+      <EncouragementCard message={fengShuiAnalysis.encouragement} />
+
       {/* Product Recommendations */}
       {isLoading ? (
         <div className="text-center p-8">
@@ -252,9 +298,6 @@ const ProductRecommendationPage: React.FC = () => {
         </>
       )}
 
-      {/* Personal Encouragement */}
-      <EncouragementCard message={fengShuiAnalysis.encouragement} />
-      
       {/* Email Subscription */}
       <div className="bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm p-6 mb-8">
         <h2 className="text-xl font-display text-accent-800 mb-4">
