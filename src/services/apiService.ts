@@ -251,14 +251,14 @@ export const saveUserAnalysis = async (
   email: string,
   birthInfo: { date: string; time: string; location: string },
   analysis: FengShuiAnalysis
-): Promise<void> => {
+): Promise<string> => {
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://rhnybtlxyhydkcvwhits.supabase.co';
   const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJobnlidGx4eWh5ZGtjdndoaXRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3NjY0NDMsImV4cCI6MjA2MTM0MjQ0M30.0GltOLyw8q4Pbg0o9OGvaGLD4L_SmqGz8-OJ410lX-g';
   
   const supabase = createClient(supabaseUrl, supabaseKey);
 
   try {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('user_analysis')
       .insert([
         { 
@@ -274,14 +274,17 @@ export const saveUserAnalysis = async (
           recommendations: analysis.recommendations,
           encouragement: analysis.encouragement
         }
-      ]);
+      ])
+      .select('uuid')
+      .single();
 
     if (error) {
       console.error('Error saving user analysis:', error);
       throw new Error('Failed to save user analysis');
     }
 
-    console.log('User analysis saved successfully');
+    console.log('User analysis saved successfully, uuid:', data.uuid);
+    return data.uuid;
   } catch (error) {
     console.error('Error saving user analysis:', error);
     throw error;
