@@ -46,17 +46,17 @@ const Header: React.FC<HeaderProps> = ({ showNewAnalysis = true }) => {
   return (
     <header className="bg-[#2E3532] border-b border-primary-100 sticky top-0 z-50">
       <div className="max-w-md mx-auto px-4 sm:px-6 py-2 flex items-center justify-between relative min-h-[56px]">
-        {/* Logo only，移动端隐藏 */}
+        {/* Logo，移动端和桌面端都显示，但桌面端更大，移动端更小 */}
         <a 
           href="https://jilicharm.com/" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex items-center hover:opacity-80 transition-opacity z-10 hidden sm:flex"
+          className="flex items-center hover:opacity-80 transition-opacity z-10"
         >
           <img 
             src={logoImage} 
             alt="JILICHARM" 
-            className="h-7 w-auto"
+            className="h-6 w-auto sm:h-7"
           />
         </a>
         {/* 标题，移动端靠左，桌面端居中 */}
