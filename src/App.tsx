@@ -7,6 +7,7 @@ import BirthInfoPage from './pages/BirthInfoPage';
 import AnalysisPage from './pages/AnalysisPage';
 import ThemeSelectionPage from './pages/ThemeSelectionPage';
 import ProductRecommendationPage from './pages/ProductRecommendationPage';
+import ShareAnalysisPage from './pages/ShareAnalysisPage';
 
 // Import components
 import Header from './components/layout/Header';
@@ -28,6 +29,7 @@ function App() {
             <Route path="/analysis" element={<AnalysisPage />} />
             <Route path="/themes" element={<ThemeSelectionPage />} />
             <Route path="/recommendations/:theme" element={<ProductRecommendationPage />} />
+            <Route path="/share/:uuid" element={<ShareAnalysisPage />} />
           </Routes>
         </AnimatePresence>
       </main>

@@ -14,11 +14,20 @@ const SocialShare: React.FC<SocialShareProps> = ({
   const shareMessage = encodeURIComponent(message);
   
   const handleWhatsAppShare = () => {
-    window.open(`https://wa.me/?text=${shareMessage} ${shareUrl}`, '_blank');
+    window.open(`https://wa.me/?text=${shareMessage}%20${shareUrl}`, '_blank');
   };
   
   const handleInstagramShare = () => {
-    alert('Copy the link and share it on your Instagram story or message!');
+    if (navigator.share) {
+      navigator.share({
+        title: 'Feng Shui Analysis',
+        text: message,
+        url
+      });
+    } else {
+      navigator.clipboard.writeText(url);
+      alert('Link copied! Paste it in your Instagram story or DM.');
+    }
   };
   
   const handleCopyLink = () => {

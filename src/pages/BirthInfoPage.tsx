@@ -7,7 +7,7 @@ import logo from '../assets/logo-jilicharm-fengshui.png';
 import RotatingTextBanner from '../components/shared/RotatingTextBanner';
 
 import { useAppContext } from '../contexts/AppContext';
-import { analyzeBirthInfo } from '../services/apiService';
+import { analyzeBirthInfo, saveUserAnalysis } from '../services/apiService';
 import { getProductsByElement, testDatabaseConnection, listAllProducts } from '../services/productService';
 import CustomDatePicker from '../components/shared/CustomDatePicker';
 
@@ -51,6 +51,7 @@ const fengShuiTips = [
 const BirthInfoPage: React.FC = () => {
   const navigate = useNavigate();
   const [showTimeHelp, setShowTimeHelp] = useState(false);
+  const [shareId, setShareId] = useState<string | null>(null);
   
   const { 
     setUserBirthInfo,
@@ -117,6 +118,15 @@ const BirthInfoPage: React.FC = () => {
       }
 
       setFengShuiAnalysis(analysis);
+      
+      // 自动保存分析结果到 user_analysis，email 传空字符串
+      const uuid = await saveUserAnalysis('', {
+        date: data.birthDate,
+        time: timeToUse,
+        location: data.birthLocation || '',
+      }, analysis);
+      setShareId(uuid);
+      localStorage.setItem('shareId', uuid);
       
       // Only proceed with product recommendations if analysis was successful
       setIsProductsLoading(true);

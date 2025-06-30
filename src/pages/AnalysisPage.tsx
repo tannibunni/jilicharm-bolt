@@ -16,7 +16,15 @@ const AnalysisPage: React.FC = () => {
     fengShuiAnalysis,
     recommendedProducts,
     isProductsLoading,
+    userBirthInfo,
+    userEmail,
   } = useAppContext();
+  const [shareId, setShareId] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    const id = localStorage.getItem('shareId');
+    if (id) setShareId(id);
+  }, []);
 
   useEffect(() => {
     if (!fengShuiAnalysis) {
@@ -66,7 +74,7 @@ const AnalysisPage: React.FC = () => {
         )}
         
         <div className="mb-6">
-  <RotatingTextBanner />
+          <RotatingTextBanner />
         </div>
 
         <div className="bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm p-6 mb-8">
@@ -79,7 +87,7 @@ const AnalysisPage: React.FC = () => {
           <EmailForm />
         </div>
         
-        <SocialShare />
+        <SocialShare url={shareId ? `${window.location.origin}/share/${shareId}` : window.location.href} />
       </div>
     </motion.div>
   );
