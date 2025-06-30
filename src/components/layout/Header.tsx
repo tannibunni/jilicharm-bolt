@@ -46,12 +46,12 @@ const Header: React.FC<HeaderProps> = ({ showNewAnalysis = true }) => {
   return (
     <header className="bg-[#2E3532] border-b border-primary-100 sticky top-0 z-50">
       <div className="max-w-md mx-auto px-4 sm:px-6 py-2 flex items-center justify-between relative min-h-[56px]">
-        {/* Logo only */}
+        {/* Logo only，移动端隐藏 */}
         <a 
           href="https://jilicharm.com/" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="flex items-center hover:opacity-80 transition-opacity z-10"
+          className="flex items-center hover:opacity-80 transition-opacity z-10 hidden sm:flex"
         >
           <img 
             src={logoImage} 
@@ -59,15 +59,17 @@ const Header: React.FC<HeaderProps> = ({ showNewAnalysis = true }) => {
             className="h-7 w-auto"
           />
         </a>
-        {/* Centered Title */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none">
-          <span className="text-white text-base font-medium tracking-wide whitespace-nowrap opacity-90">Analysis Result</span>
+        {/* 标题，移动端靠左，桌面端居中 */}
+        <div
+          className="sm:absolute sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2 pointer-events-none select-none flex-1 text-left sm:text-center"
+        >
+          <span className="text-white text-base font-medium tracking-wide whitespace-nowrap opacity-90 block">Analysis Result</span>
         </div>
-        {/* New Analysis Button */}
+        {/* New Analysis Button，移动端显示在右侧 */}
         {showNewAnalysis && (
           <button
             onClick={handleNewAnalysisClick}
-            className="bg-primary-500 hover:bg-primary-600 text-white text-xs font-medium px-3 py-1.5 rounded-2xl transition-colors duration-200 z-10 shadow-sm min-w-[90px] hidden sm:block"
+            className="bg-primary-500 hover:bg-primary-600 text-white text-xs font-medium px-3 py-1.5 rounded-2xl transition-colors duration-200 z-10 shadow-sm min-w-[90px] block"
           >
             New Analysis
           </button>
