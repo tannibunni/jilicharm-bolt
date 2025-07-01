@@ -140,11 +140,14 @@ const BirthInfoPage: React.FC = () => {
       const productSnapshots = products.slice(0, 6).map(p => ({
         id: p.id,
         name: p.name,
+        description: p.description || '',
         imageUrl: p.imageUrl,
         shopifyUrl: p.shopifyUrl,
         price: p.price,
         onSale: p.onSale,
-        originalPrice: p.originalPrice
+        originalPrice: p.originalPrice,
+        elements: p.elements || [],
+        themes: p.themes || []
       }));
       // 再次保存分析，带上产品快照（可选：也可以合并到上面第一次保存）
       if (productSnapshots.length > 0) {
