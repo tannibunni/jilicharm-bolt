@@ -13,7 +13,26 @@ import ShareAnalysisPage from './pages/ShareAnalysisPage';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
 
+// Google Analytics 路由切换埋点
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
+function usePageView() {
+  const location = useLocation();
+  React.useEffect(() => {
+    if (window.gtag) {
+      window.gtag('event', 'page_view', {
+        page_path: location.pathname + location.search,
+      });
+    }
+  }, [location]);
+}
+
 function App() {
+  usePageView();
   const location = useLocation();
   
   // Show header on all pages except the home page (BirthInfoPage)

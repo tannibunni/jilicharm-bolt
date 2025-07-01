@@ -19,7 +19,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   };
   
   return (
-    <div className="min-w-[280px] w-[280px] bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm overflow-hidden flex flex-col">
+    <a
+      href={product.shopifyUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="min-w-[280px] w-[280px] bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm overflow-hidden flex flex-col group focus:outline-none focus:ring-2 focus:ring-accent-700/40"
+      tabIndex={0}
+    >
       <div className="w-full aspect-square overflow-hidden relative">
         {product.onSale && (
           <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-md text-sm font-medium shadow-sm">
@@ -29,14 +35,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <img 
           src={product.imageUrl} 
           alt={product.name} 
-          className="w-full h-full object-cover transition-transform hover:scale-105 duration-500"
+          className="w-full h-full object-cover transition-transform group-hover:scale-105 duration-500"
         />
       </div>
-      
       <div className="p-4 flex flex-col flex-grow">
-        <h3 className="font-medium text-accent-800 mb-1 line-clamp-1">{product.name}</h3>
+        <h3 className="font-medium text-accent-800 mb-1 line-clamp-1 group-hover:underline">{product.name}</h3>
         <p className="text-sm text-accent-600 mb-3 line-clamp-2">{product.description}</p>
-        
         <div className="flex flex-wrap gap-1 mb-3">
           {product.elements.map((element) => (
             <span 
@@ -47,7 +51,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
           ))}
         </div>
-        
         <div className="mt-auto flex items-center justify-between">
           <div className="flex items-baseline gap-2">
             <span className="font-medium text-accent-800">{product.price}</span>
@@ -55,17 +58,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <span className="text-sm text-accent-400 line-through">{product.originalPrice}</span>
             )}
           </div>
-          <a 
-            href={product.shopifyUrl} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-sm text-accent-700 hover:text-accent-900 font-medium"
-          >
+          <span className="inline-flex items-center text-sm text-accent-700 group-hover:text-accent-900 font-medium">
             View <ExternalLink size={14} className="ml-1" />
-          </a>
+          </span>
         </div>
       </div>
-    </div>
+    </a>
   );
 };
 

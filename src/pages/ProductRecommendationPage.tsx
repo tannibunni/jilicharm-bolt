@@ -298,6 +298,22 @@ const ProductRecommendationPage: React.FC = () => {
         </>
       )}
 
+      {/* Want to Try a Different Theme? 区块 */}
+      <div className="bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm p-6 mb-8">
+        <h2 className="text-xl font-display text-accent-800 mb-4">
+          Want to Try a Different Theme?
+        </h2>
+        <p className="text-accent-700 mb-6">
+          Explore other Feng Shui themes and get new personalized recommendations.
+        </p>
+        <button
+          onClick={() => navigate('/themes')}
+          className="w-full bg-primary-500 hover:bg-primary-600 text-white font-medium py-3 px-4 rounded-lg transition-colors duration-200"
+        >
+          Choose Different Theme
+        </button>
+      </div>
+
       {/* Email Subscription */}
       <div className="bg-white/80 backdrop-blur-sm border border-primary-100 rounded-xl shadow-sm p-6 mb-8">
         <h2 className="text-xl font-display text-accent-800 mb-4">
