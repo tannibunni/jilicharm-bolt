@@ -136,6 +136,24 @@ const BirthInfoPage: React.FC = () => {
         throw new Error('Invalid products response format');
       }
       
+      // 只保存前6个产品的快照
+      const productSnapshots = products.slice(0, 6).map(p => ({
+        id: p.id,
+        name: p.name,
+        imageUrl: p.imageUrl,
+        shopifyUrl: p.shopifyUrl,
+        price: p.price,
+        onSale: p.onSale,
+        originalPrice: p.originalPrice
+      }));
+      // 再次保存分析，带上产品快照（可选：也可以合并到上面第一次保存）
+      if (productSnapshots.length > 0) {
+        await saveUserAnalysis('', {
+          date: data.birthDate,
+          time: timeToUse,
+          location: data.birthLocation || '',
+        }, analysis, productSnapshots);
+      }
       setRecommendedProducts(products);
       navigate('/analysis');
     } catch (err) {

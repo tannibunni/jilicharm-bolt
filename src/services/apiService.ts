@@ -250,7 +250,8 @@ export const saveUserEmail = async (email: string): Promise<void> => {
 export const saveUserAnalysis = async (
   email: string,
   birthInfo: { date: string; time: string; location: string },
-  analysis: FengShuiAnalysis
+  analysis: FengShuiAnalysis,
+  recommendedProducts?: any[]
 ): Promise<string> => {
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://rhnybtlxyhydkcvwhits.supabase.co';
   const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJobnlidGx4eWh5ZGtjdndoaXRzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU3NjY0NDMsImV4cCI6MjA2MTM0MjQ0M30.0GltOLyw8q4Pbg0o9OGvaGLD4L_SmqGz8-OJ410lX-g';
@@ -272,7 +273,8 @@ export const saveUserAnalysis = async (
           favorable_elements: analysis.favorableElements,
           lucky_colors: analysis.luckyColors,
           recommendations: analysis.recommendations,
-          encouragement: analysis.encouragement
+          encouragement: analysis.encouragement,
+          recommended_products: recommendedProducts || null
         }
       ])
       .select('uuid')

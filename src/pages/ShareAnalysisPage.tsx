@@ -16,6 +16,7 @@ const ShareAnalysisPage: React.FC = () => {
   const { uuid } = useParams<{ uuid: string }>();
   const [analysis, setAnalysis] = useState<FengShuiAnalysis | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
+  const [productSnapshots, setProductSnapshots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,8 +43,11 @@ const ShareAnalysisPage: React.FC = () => {
           recommendations: data.recommendations,
           encouragement: data.encouragement,
         });
+        if (data.recommended_products && Array.isArray(data.recommended_products)) {
+          setProductSnapshots(data.recommended_products);
+        }
         // 拉取推荐产品
-        if (data.favorable_elements && data.favorable_elements.length > 0) {
+        if (!data.recommended_products && data.favorable_elements && data.favorable_elements.length > 0) {
           const { data: prodData } = await supabase
             .from('products')
             .select('*')
@@ -76,9 +80,11 @@ const ShareAnalysisPage: React.FC = () => {
       <FiveElementsChart elements={analysis.elements} />
       <EncouragementCard message={analysis.encouragement} />
       <FengShuiRecommendation analysis={analysis} />
-      {products.length > 0 && (
+      {productSnapshots.length > 0 ? (
+        <ProductCarousel products={productSnapshots} title="Recommended for You" />
+      ) : products.length > 0 ? (
         <ProductCarousel products={products} title="Recommended for You" />
-      )}
+      ) : null}
       <SocialShare />
     </div>
   );
